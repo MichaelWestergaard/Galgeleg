@@ -17,8 +17,12 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
     TextView wrongLetters;
     ImageView galgeImg;
 
+    TextView usernameTxt;
+    TextView scoreTxt;
+
     Galgelogik galgelogik = new Galgelogik();
     String username = "Anonymous";
+    int score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,12 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         Intent intent = getIntent();
         username = intent.getExtras().getString("username");
 
+        if(username.isEmpty())
+            username = "Anonymous";
+
+        usernameTxt = findViewById(R.id.usernameTxt);
+        scoreTxt = findViewById(R.id.score);
+
         guessBtn = findViewById(R.id.guessBtn);
         chosenWord = findViewById(R.id.chosenWord);
         wrongLetters = findViewById(R.id.usedLetters);
@@ -34,9 +44,12 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
 
         guessBtn.setOnClickListener(this);
 
+        usernameTxt.setText(username);
+        scoreTxt.setText("Score: 0");
+
         chosenWord.setText(galgelogik.getSynligtOrd());
+
         galgelogik.logStatus();
-        System.out.println(username);
     }
 
     @Override
@@ -63,14 +76,18 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         } else if(!Character.isLetter(guessedLetter.charAt(0))){
             Toast.makeText(this, "Du kan kun gætte på bogstaver!", Toast.LENGTH_LONG).show();
         } else {
+            guessText.setText("");
             makeGuess(guessedLetter);
         }
     }
 
     public void makeGuess(String guess){
         galgelogik.gætBogstav(guess);
+
         chosenWord.setText(galgelogik.getSynligtOrd());
         wrongLetters.setText(galgelogik.getBrugteBogstaver().toString().replace("[","").replace("]","")); //Måske en
+        calculateScore();
+        scoreTxt.setText("Score: " + score);
         galgelogik.logStatus();
 
         if(galgelogik.getAntalForkerteBogstaver() > 0){
@@ -96,5 +113,17 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         wrongLetters.setText("");
         galgelogik.logStatus();
         galgeImg.setImageResource(R.drawable.galge);
+    }
+
+    public void calculateScore(){
+        if(!galgelogik.erSpilletSlut()) {
+            score += galgelogik.erSidsteBogstavKorrekt() ? 10 : -5;
+        } else if(galgelogik.erSpilletSlut()){
+            if(galgelogik.erSpilletVundet()){
+                score += 100;
+            } else {
+                score -= 50;
+            }
+        }
     }
 }

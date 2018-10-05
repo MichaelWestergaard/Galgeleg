@@ -13,7 +13,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Hvordan spillet fungere"
+        android:text="Hvordan spillet fungerer"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
