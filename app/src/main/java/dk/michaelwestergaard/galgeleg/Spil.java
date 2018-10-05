@@ -1,6 +1,8 @@
 package dk.michaelwestergaard.galgeleg;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,9 @@ import android.widget.Toast;
 
 public class Spil extends AppCompatActivity implements View.OnClickListener {
 
+    AlertDialog.Builder alertBuilder;
+    AlertDialog alertDialog;
+
     Button guessBtn;
     TextView chosenWord;
     TextView wrongLetters;
@@ -21,6 +26,8 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
     TextView scoreTxt;
 
     Galgelogik galgelogik = new Galgelogik();
+    PlayerDAO playerDAO = new PlayerDAO();
+    PlayerDTO player = null;
     String username = "Anonymous";
     int score = 0;
 
@@ -29,10 +36,13 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spil);
         Intent intent = getIntent();
-        username = intent.getExtras().getString("username");
+        String username = intent.getExtras().getString("username");
 
         if(username.isEmpty())
             username = "Anonymous";
+
+        player = new PlayerDTO(username, 0);
+        playerDAO.create(player);
 
         usernameTxt = findViewById(R.id.usernameTxt);
         scoreTxt = findViewById(R.id.score);
@@ -44,12 +54,32 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
 
         guessBtn.setOnClickListener(this);
 
-        usernameTxt.setText(username);
-        scoreTxt.setText("Score: 0");
+        usernameTxt.setText(player.getUsername());
+        scoreTxt.setText("Score: " + player.getScore());
 
         chosenWord.setText(galgelogik.getSynligtOrd());
 
         galgelogik.logStatus();
+
+        alertBuilder = new AlertDialog.Builder(Spil.this);
+        alertBuilder.setTitle("Afslut eller spil videre?");
+
+        alertBuilder.setPositiveButton("Spil Vidgere!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                reset();
+                dialog.cancel();
+            }
+        });
+        alertBuilder.setNegativeButton("Afslut", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Indsæt score + navn i highscore liste
+                finish();
+            }
+        });
+
+        alertDialog = alertBuilder.create();
     }
 
     @Override
@@ -87,23 +117,17 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         chosenWord.setText(galgelogik.getSynligtOrd());
         wrongLetters.setText(galgelogik.getBrugteBogstaver().toString().replace("[","").replace("]","")); //Måske en
         calculateScore();
-        scoreTxt.setText("Score: " + score);
+        scoreTxt.setText("Score: " + player.getScore());
         galgelogik.logStatus();
+
+        playerDAO.update(player);
 
         if(galgelogik.getAntalForkerteBogstaver() > 0){
             galgeImg.setImageResource(galgeImg.getContext().getResources().getIdentifier("forkert" + galgelogik.getAntalForkerteBogstaver(), "drawable", galgeImg.getContext().getPackageName()));
         }
 
         if(galgelogik.erSpilletSlut()) {
-            if(galgelogik.erSpilletTabt()){
-                //Popup med prøv igen.
-                System.out.println("Tabt!");
-                reset();
-            } else if(galgelogik.erSpilletVundet()){
-                //Tillykke, prøv igen.
-                System.out.println("Vundet!");
-                reset();
-            }
+            alertDialog.show();
         }
     }
 
@@ -116,14 +140,16 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void calculateScore(){
+        int score = 0;
         if(!galgelogik.erSpilletSlut()) {
-            score += galgelogik.erSidsteBogstavKorrekt() ? 10 : -5;
+            score = galgelogik.erSidsteBogstavKorrekt() ? 10 : -5;
         } else if(galgelogik.erSpilletSlut()){
             if(galgelogik.erSpilletVundet()){
-                score += 100;
+                score = 100;
             } else {
-                score -= 50;
+                score = -50;
             }
         }
+        player.increaseScore(score);
     }
 }
