@@ -7,7 +7,7 @@
     tools:context=".Spil">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/galgeImg"
         android:layout_width="wrap_content"
         android:layout_height="144dp"
         android:layout_marginEnd="8dp"
@@ -25,11 +25,12 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="word"
         android:textAlignment="center"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/galgeImg" />
 
     <TextView
         android:id="@+id/textView2"
@@ -38,20 +39,20 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Forkerte bogstaver:"
+        android:text="Brugte bogstaver:"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chosenWord" />
 
     <TextView
-        android:id="@+id/wrongLetters"
+        android:id="@+id/usedLetters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,5 +84,5 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wrongLetters" />
+        app:layout_constraintTop_toBottomOf="@+id/usedLetters" />
 </android.support.constraint.ConstraintLayout>
