@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".HighsocreList" />
-        <activity android:name=".Spil"></activity>
+        <activity android:name=".Spil" />
+        <activity android:name=".Help"></activity>
     </application>
 
 </manifest>

@@ -14,8 +14,10 @@ import android.widget.EditText;
 public class Hovedmenu extends AppCompatActivity implements View.OnClickListener {
 
     Button playBtn;
+    Button helpBtn;
     Button highscoreBtn;
     AlertDialog.Builder alertBuilder;
+    AlertDialog alertDialog;
     EditText usernameInput;
 
     @Override
@@ -24,14 +26,17 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_hovedmenu);
 
         playBtn = findViewById(R.id.play_button);
+        helpBtn = findViewById(R.id.help_button);
         highscoreBtn = findViewById(R.id.highscore_button);
 
         playBtn.setOnClickListener(this);
+        helpBtn.setOnClickListener(this);
         highscoreBtn.setOnClickListener(this);
 
-        alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder = new AlertDialog.Builder(Hovedmenu.this);
         alertBuilder.setTitle("Nyt Spil");
         View dialogView = this.getLayoutInflater().inflate(R.layout.layout_new_game, null);
+
         usernameInput = dialogView.findViewById(R.id.username);
         alertBuilder.setView(dialogView);
 
@@ -47,6 +52,8 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
                 dialog.cancel();
             }
         });
+
+        alertDialog = alertBuilder.create();
     }
 
     @Override
@@ -54,7 +61,12 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
 
         switch(view.getId()){
             case R.id.play_button:
-                alertBuilder.show();
+                alertDialog.show();
+                break;
+
+            case R.id.help_button:
+                Intent help = new Intent(this, Help.class);
+                startActivity(help);
                 break;
 
             case R.id.highscore_button:

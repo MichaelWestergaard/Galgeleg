@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Galgeleg</string>
+    <string name="help_text">Spillet går ud på, at der bliver valgt et ord, som du derefter skal gætte. Du får antallet af bogstaver, som ordet består af, og derefter skal du så gætte hele ordet. Hvert bogstav er repræsenteret med en stjerne (*).\n
+        For hvert bogstav du gætter forkert vil én kropsdel blive tegnet på galgen. Hvis du gætter forkert 7 gange vil du tabe spillet.\n
+        Du kan kun bruge gætte på et bogstav ad gangen og kan ikke gætte/miste en tur, hvis du gætter på et bogstav du allerede har brugt. De brugte bogstaver vil blive vist på skærmen.\n
+
+    </string>
 </resources>
