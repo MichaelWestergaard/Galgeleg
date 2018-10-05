@@ -41,7 +41,7 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         if(username.isEmpty())
             username = "Anonymous";
 
-        player = new PlayerDTO(username, 0);
+        player = new PlayerDTO(username, 0, null);
         playerDAO.create(player);
 
         usernameTxt = findViewById(R.id.usernameTxt);

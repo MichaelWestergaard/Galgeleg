@@ -23,4 +23,8 @@ public class PlayerDAO {
         return null;
     }
 
+    public DatabaseReference getDatabase(){
+        return database;
+    }
+
 }

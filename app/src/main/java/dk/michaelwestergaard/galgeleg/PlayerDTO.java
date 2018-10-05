@@ -6,9 +6,10 @@ public class PlayerDTO {
     private String username;
     private int score;
 
-    public PlayerDTO(String username, int score) {
+    public PlayerDTO(String username, int score, String userID) {
         this.username = username;
         this.score = score;
+        this.userID = userID;
     }
 
     public String getUsername() {
@@ -37,5 +38,14 @@ public class PlayerDTO {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerDTO{" +
+                "userID='" + userID + '\'' +
+                ", username='" + username + '\'' +
+                ", score=" + score +
+                '}';
     }
 }
