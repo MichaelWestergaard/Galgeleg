@@ -127,6 +127,7 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         }
 
         if(galgelogik.erSpilletSlut()) {
+            chosenWord.setText("Ordet var: " + galgelogik.getOrdet());
             alertDialog.show();
         }
     }

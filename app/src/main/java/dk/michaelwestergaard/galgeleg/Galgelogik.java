@@ -56,17 +56,26 @@ public class Galgelogik {
 
 
     public Galgelogik() {
-        muligeOrd.add("bil");
-        muligeOrd.add("computer");
         muligeOrd.add("programmering");
-        muligeOrd.add("motorvej");
-        muligeOrd.add("busrute");
-        muligeOrd.add("gangsti");
-        muligeOrd.add("skovsnegl");
-        muligeOrd.add("solsort");
-        muligeOrd.add("seksten");
-        muligeOrd.add("sytten");
-        muligeOrd.add("atten");
+        muligeOrd.add("computer");
+        muligeOrd.add("database");
+        muligeOrd.add("objektorienteret");
+        muligeOrd.add("kompleksitet");
+        muligeOrd.add("software");
+        muligeOrd.add("hardware");
+        muligeOrd.add("udviklingsproces");
+        muligeOrd.add("kravspecifikation");
+        muligeOrd.add("alfanumerisk");
+        muligeOrd.add("variabelnavn");
+        muligeOrd.add("variabelerklæring");
+        muligeOrd.add("algoritme");
+        muligeOrd.add("forgreninger");
+        muligeOrd.add("løkker");
+        muligeOrd.add("funktionskald");
+        muligeOrd.add("spaghettikode");
+        muligeOrd.add("brugergrænseflade");
+        muligeOrd.add("programmeringsparadigme");
+        muligeOrd.add("android");
         nulstil();
     }
 
