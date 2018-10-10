@@ -107,7 +107,11 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
             Toast.makeText(this, "Du kan kun gætte på bogstaver!", Toast.LENGTH_LONG).show();
         } else {
             guessText.setText("");
-            makeGuess(guessedLetter);
+            if(!galgelogik.getBrugteBogstaver().contains(guessedLetter)){
+                makeGuess(guessedLetter);
+            } else {
+                Toast.makeText(this, "Du har allerede gættet på dette bogstav!", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
