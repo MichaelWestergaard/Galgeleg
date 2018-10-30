@@ -2,6 +2,7 @@ package dk.michaelwestergaard.galgeleg;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,29 +58,7 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         usernameTxt.setText(player.getUsername());
         scoreTxt.setText("Score: " + player.getScore());
 
-        chosenWord.setText(galgelogik.getSynligtOrd());
-
-        galgelogik.logStatus();
-
-        alertBuilder = new AlertDialog.Builder(Spil.this);
-        alertBuilder.setTitle("Afslut eller spil videre?");
-
-        alertBuilder.setPositiveButton("Spil Vidgere!", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                reset();
-                dialog.cancel();
-            }
-        });
-        alertBuilder.setNegativeButton("Afslut", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Indsæt score + navn i highscore liste
-                finish();
-            }
-        });
-
-        alertDialog = alertBuilder.create();
+        new NewWords().execute();
     }
 
     @Override
@@ -132,6 +111,12 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
 
         if(galgelogik.erSpilletSlut()) {
             chosenWord.setText("Ordet var: " + galgelogik.getOrdet());
+
+            if(galgelogik.erSpilletVundet()){
+                showEndingScreen("Du har vundet!", "Antal forsøg: " + galgelogik.getBrugteBogstaver().size());
+            } else {
+                showEndingScreen("Du har tabt!", "Ordet var: " + galgelogik.getOrdet());
+            }
             alertDialog.show();
         }
     }
@@ -156,5 +141,70 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
             }
         }
         player.increaseScore(score);
+    }
+
+    public void showEndingScreen(String title, String description){
+        alertBuilder = new AlertDialog.Builder(Spil.this);
+        alertBuilder.setTitle("Spillet er slut!");
+        View dialogView = this.getLayoutInflater().inflate(R.layout.layout_ending_screen, null);
+
+        TextView titleTextView = dialogView.findViewById(R.id.title);
+        TextView descriptionTextView = dialogView.findViewById(R.id.description);
+
+        titleTextView.setText(title);
+        descriptionTextView.setText(description);
+
+        alertBuilder.setView(dialogView);
+
+        alertBuilder.setPositiveButton("Spil Igen!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                reset();
+                dialog.cancel();
+            }
+        });
+        alertBuilder.setNegativeButton("Afslut", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Indsæt score + navn i highscore liste
+                finish();
+            }
+        });
+
+        alertDialog = alertBuilder.create();
+    }
+
+    private class NewWords extends AsyncTask<String, Void, String> {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Spil.this);
+        AlertDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                galgelogik.hentOrdFraDr();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            chosenWord.setText(galgelogik.getSynligtOrd());
+            galgelogik.logStatus();
+            progressDialog.dismiss();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            builder.setCancelable(false); // if you want user to wait for some process to finish,
+            builder.setView(R.layout.layout_loading_dialog);
+            progressDialog = builder.create();
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 }

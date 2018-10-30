@@ -55,7 +55,6 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
                 dialog.cancel();
             }
         });
-
         alertDialog = alertBuilder.create();
     }
 
@@ -89,6 +88,4 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
         game.putExtra("username", username);
         startActivity(game);
     }
-
-;
 }
