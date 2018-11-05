@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class Hovedmenu extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,6 +19,9 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
     AlertDialog.Builder alertBuilder;
     AlertDialog alertDialog;
     EditText usernameInput;
+
+    SharedPreferences sharedPreferences;
+    static String PREF_NAME = "Username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,7 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
         View dialogView = this.getLayoutInflater().inflate(R.layout.layout_new_game, null);
 
         usernameInput = dialogView.findViewById(R.id.username);
+        usernameInput.setText(getSharedPreferences().getString(PREF_NAME, ""));
         alertBuilder.setView(dialogView);
 
         alertBuilder.setPositiveButton("Spil!", new DialogInterface.OnClickListener() {
@@ -56,6 +57,10 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
             }
         });
         alertDialog = alertBuilder.create();
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        return this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -84,6 +89,11 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
 
     public void startGame(){
         String username = usernameInput.getText().toString();
+
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putString(PREF_NAME, username);
+        editor.commit();
+
         Intent game = new Intent(this, Spil.class);
         game.putExtra("username", username);
         startActivity(game);

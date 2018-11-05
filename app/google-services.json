@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "161444155777",
+    "firebase_url": "https://galgeleg-e353a.firebaseio.com",
+    "project_id": "galgeleg-e353a",
+    "storage_bucket": "galgeleg-e353a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161444155777:android:cf095192b46bd2b8",
+        "android_client_info": {
+          "package_name": "dk.michaelwestergaard.galgeleg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161444155777-jkp5l1qsua1pphndpj5uuuk1ls7q5rds.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.michaelwestergaard.galgeleg",
+            "certificate_hash": "88caa669c0ec8ae82dbe2864bf25e4ceab51aae1"
+          }
+        },
+        {
+          "client_id": "161444155777-u8ft6ij6ee8dr0nrn2tg6n2pu6rn5qa0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJSAhR9ayB1c0z_sfwyzuIGS3qTNv5YgQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161444155777-u8ft6ij6ee8dr0nrn2tg6n2pu6rn5qa0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
