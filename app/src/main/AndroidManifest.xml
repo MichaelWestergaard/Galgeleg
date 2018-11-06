@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".HighsocreList" />
         <activity android:name=".Spil" />
-        <activity android:name=".Help"></activity>
+        <activity android:name=".Help" />
+        <activity android:name=".EndingScreen"></activity>
     </application>
 
 </manifest>

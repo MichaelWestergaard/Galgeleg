@@ -1,5 +1,6 @@
 package dk.michaelwestergaard.galgeleg;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -117,7 +118,6 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
             } else {
                 showEndingScreen("Du har tabt!", "Ordet var: " + galgelogik.getOrdet());
             }
-            alertDialog.show();
         }
     }
 
@@ -144,34 +144,22 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void showEndingScreen(String title, String description){
-        alertBuilder = new AlertDialog.Builder(Spil.this);
-        alertBuilder.setTitle("Spillet er slut!");
-        View dialogView = this.getLayoutInflater().inflate(R.layout.layout_ending_screen, null);
+        Intent endingScreen = new Intent(this, EndingScreen.class);
+        endingScreen.putExtra("title", title);
+        endingScreen.putExtra("description", description);
+        endingScreen.putExtra("gameIsWon", galgelogik.erSpilletVundet());
+        startActivityForResult(endingScreen, 1);
+    }
 
-        TextView titleTextView = dialogView.findViewById(R.id.title);
-        TextView descriptionTextView = dialogView.findViewById(R.id.description);
-
-        titleTextView.setText(title);
-        descriptionTextView.setText(description);
-
-        alertBuilder.setView(dialogView);
-
-        alertBuilder.setPositiveButton("Spil Igen!", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1){
+            if(resultCode == Activity.RESULT_OK){
                 reset();
-                dialog.cancel();
-            }
-        });
-        alertBuilder.setNegativeButton("Afslut", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Indsæt score + navn i highscore liste
+            } else {
                 finish();
             }
-        });
-
-        alertDialog = alertBuilder.create();
+        }
     }
 
     private class NewWords extends AsyncTask<String, Void, String> {

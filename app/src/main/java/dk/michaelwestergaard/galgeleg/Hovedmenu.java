@@ -20,8 +20,7 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
     AlertDialog alertDialog;
     EditText usernameInput;
 
-    SharedPreferences sharedPreferences;
-    static String PREF_NAME = "Username";
+    static String PREF_NAME = "Galgeleg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
