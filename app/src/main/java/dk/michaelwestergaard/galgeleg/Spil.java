@@ -77,7 +77,7 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
 
     public void newGuess() {
         EditText guessText = findViewById(R.id.guess);
-        String guessedLetter = guessText.getText().toString();
+        String guessedLetter = guessText.getText().toString().toLowerCase();
 
         if(guessedLetter.isEmpty()){
             Toast.makeText(this, "Du skal gætte på noget..", Toast.LENGTH_LONG).show();
