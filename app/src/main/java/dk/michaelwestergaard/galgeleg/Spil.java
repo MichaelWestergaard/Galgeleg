@@ -1,12 +1,12 @@
 package dk.michaelwestergaard.galgeleg;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -153,7 +153,19 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 1){
+        if(requestCode == 0){
+            if(resultCode == Activity.RESULT_OK){
+                //Check for newWord activity
+                if(!data.getStringExtra("NewWord").isEmpty()){
+                    Log.d("Word", data.getStringExtra("NewWord"));
+                    galgelogik.setWord(data.getStringExtra("NewWord"));
+                    chosenWord.setText(galgelogik.getSynligtOrd());
+                    galgelogik.logStatus();
+                }
+            } else {
+                finish();
+            }
+        } else if(requestCode == 1){
             if(resultCode == Activity.RESULT_OK){
                 reset();
             } else {
@@ -165,6 +177,7 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
     private class NewWords extends AsyncTask<String, Void, String> {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Spil.this);
+
         AlertDialog progressDialog;
 
         @Override
@@ -179,14 +192,17 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String result) {
-            chosenWord.setText(galgelogik.getSynligtOrd());
-            galgelogik.logStatus();
             progressDialog.dismiss();
+
+            Intent newWord = new Intent(Spil.this, NewWord.class);
+            newWord.putExtra("words", galgelogik.muligeOrd.toString());
+            startActivityForResult(newWord, 0);
+            chosenWord.setText(galgelogik.getSynligtOrd());
         }
 
         @Override
         protected void onPreExecute() {
-            builder.setCancelable(false); // if you want user to wait for some process to finish,
+            builder.setCancelable(false);
             builder.setView(R.layout.layout_loading_dialog);
             progressDialog = builder.create();
             progressDialog.show();

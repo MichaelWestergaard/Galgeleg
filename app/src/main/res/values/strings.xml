@@ -3,4 +3,7 @@
     <string name="help_text">Spillet går ud på, at der bliver valgt et ord, som du derefter skal gætte. Du får antallet af bogstaver, som ordet består af, og derefter skal du så gætte hele ordet. Hvert bogstav er repræsenteret med en stjerne (*).\nFor hvert bogstav du gætter forkert vil én kropsdel blive tegnet på galgen. Hvis du gætter forkert 7 gange vil du tabe spillet.\nDu kan kun gætte på et bogstav ad gangen og kan ikke gætte/miste en tur, hvis du gætter på et bogstav du allerede har brugt. De brugte bogstaver vil blive vist på skærmen.\n\nScoren bliver udregnet på følgende måde:\n10 point for korrekt gættet bogstav\n-5 point for forkert bogstav\n100 point for at gætte det fulde ord\n-50 point for ikke at gætte det fulde ord.
 
     </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

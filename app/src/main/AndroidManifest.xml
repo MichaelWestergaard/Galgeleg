@@ -19,7 +19,9 @@
         <activity android:name=".HighsocreList" />
         <activity android:name=".Spil" />
         <activity android:name=".Help" />
-        <activity android:name=".EndingScreen"></activity>
+        <activity android:name=".EndingScreen" />
+        <activity android:name=".NewWord"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
     </application>
 
 </manifest>

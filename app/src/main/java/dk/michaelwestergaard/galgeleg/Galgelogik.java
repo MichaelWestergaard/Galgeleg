@@ -88,7 +88,6 @@ public class Galgelogik {
         opdaterSynligtOrd();
     }
 
-
     private void opdaterSynligtOrd() {
         synligtOrd = "";
         spilletErVundet = true;
@@ -174,6 +173,19 @@ public class Galgelogik {
 
         System.out.println("muligeOrd = " + muligeOrd);
         nulstil();
+    }
+
+    //Ny logik
+    public void setWord(String word){
+        ordet = word;
+        opdaterSynligtOrd();
+        logStatus();
+    }
+
+    public void setWord(int position){
+        ordet = muligeOrd.get(position);
+        opdaterSynligtOrd();
+        logStatus();
     }
 
 }
