@@ -21,7 +21,7 @@
         <activity android:name=".Help" />
         <activity android:name=".EndingScreen" />
         <activity android:name=".NewWord"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
 
 </manifest>

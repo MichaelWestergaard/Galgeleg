@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -21,6 +22,14 @@ public class Galgelogik {
     private boolean spilletErVundet;
     private boolean spilletErTabt;
 
+    private static Galgelogik galgelogik = null;
+
+    public static Galgelogik getInstance(){
+        if(galgelogik == null){
+            galgelogik = new Galgelogik();
+        }
+        return galgelogik;
+    }
 
     public ArrayList<String> getBrugteBogstaver() {
         return brugteBogstaver;
@@ -56,26 +65,6 @@ public class Galgelogik {
 
 
     public Galgelogik() {
-        muligeOrd.add("programmering");
-        muligeOrd.add("computer");
-        muligeOrd.add("database");
-        muligeOrd.add("objektorienteret");
-        muligeOrd.add("kompleksitet");
-        muligeOrd.add("software");
-        muligeOrd.add("hardware");
-        muligeOrd.add("udviklingsproces");
-        muligeOrd.add("kravspecifikation");
-        muligeOrd.add("alfanumerisk");
-        muligeOrd.add("variabelnavn");
-        muligeOrd.add("variabelerklæring");
-        muligeOrd.add("algoritme");
-        muligeOrd.add("forgreninger");
-        muligeOrd.add("løkker");
-        muligeOrd.add("funktionskald");
-        muligeOrd.add("spaghettikode");
-        muligeOrd.add("brugergrænseflade");
-        muligeOrd.add("programmeringsparadigme");
-        muligeOrd.add("android");
         nulstil();
     }
 
@@ -84,6 +73,10 @@ public class Galgelogik {
         antalForkerteBogstaver = 0;
         spilletErVundet = false;
         spilletErTabt = false;
+    }
+
+    public void randomWord(){
+        nulstil();
         ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
         opdaterSynligtOrd();
     }
@@ -170,22 +163,26 @@ public class Galgelogik {
         System.out.println("data = " + Arrays.asList(data.split("\\s+")));
         muligeOrd.clear();
         muligeOrd.addAll(new HashSet<String>(Arrays.asList(data.split(" "))));
-
-        System.out.println("muligeOrd = " + muligeOrd);
         nulstil();
     }
 
     //Ny logik
     public void setWord(String word){
+        nulstil();
         ordet = word;
         opdaterSynligtOrd();
-        logStatus();
     }
 
     public void setWord(int position){
+        nulstil();
         ordet = muligeOrd.get(position);
         opdaterSynligtOrd();
-        logStatus();
+    }
+
+    public void loadWords(String wordList){
+        muligeOrd.clear();
+        muligeOrd.addAll(new HashSet<String>(Arrays.asList(wordList.split(", "))));
+        System.out.println("muligeord " + muligeOrd);
     }
 
 }

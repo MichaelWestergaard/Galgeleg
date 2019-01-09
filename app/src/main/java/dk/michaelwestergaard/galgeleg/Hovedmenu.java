@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,12 +20,16 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
     AlertDialog alertDialog;
     EditText usernameInput;
 
-    static String PREF_NAME = "Galgeleg";
+    LocalData localData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hovedmenu);
+
+        localData = new LocalData(this);
+
+        Log.d("SharedPref", localData.toString());
 
         playBtn = findViewById(R.id.play_button);
         helpBtn = findViewById(R.id.help_button);
@@ -40,7 +44,7 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
         View dialogView = this.getLayoutInflater().inflate(R.layout.layout_new_game, null);
 
         usernameInput = dialogView.findViewById(R.id.username);
-        usernameInput.setText(getSharedPreferences().getString(PREF_NAME, ""));
+        usernameInput.setText(localData.getData("username"));
         alertBuilder.setView(dialogView);
 
         alertBuilder.setPositiveButton("Spil!", new DialogInterface.OnClickListener() {
@@ -58,9 +62,6 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
         alertDialog = alertBuilder.create();
     }
 
-    public SharedPreferences getSharedPreferences() {
-        return this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-    }
 
     @Override
     public void onClick(View view) {
@@ -89,9 +90,7 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
     public void startGame(){
         String username = usernameInput.getText().toString();
 
-        SharedPreferences.Editor editor = getSharedPreferences().edit();
-        editor.putString(PREF_NAME, username);
-        editor.commit();
+        localData.saveData("username", username);
 
         Intent game = new Intent(this, Spil.class);
         game.putExtra("username", username);
