@@ -106,7 +106,6 @@ public class HighsocreList extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            System.out.println("new view");
             View view = getLayoutInflater().inflate(R.layout.highscorelayout, null);
             TextView highScoreName = view.findViewById(R.id.high_score_username);
             TextView highScorePoints = view.findViewById(R.id.high_score_points);

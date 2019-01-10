@@ -17,11 +17,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".HighsocreList" />
-        <activity android:name=".Spil" />
+        <activity android:name=".Spil"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Help" />
         <activity android:name=".EndingScreen" />
         <activity android:name=".NewWord"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"></activity>
     </application>
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

@@ -2,6 +2,10 @@ package dk.michaelwestergaard.galgeleg;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -25,7 +29,9 @@ import java.util.Random;
 
 public class NewWord extends AppCompatActivity implements View.OnClickListener {
 
-    ArrayList<String> words = new ArrayList<String>();
+    Galgelogik galgelogik = Galgelogik.getInstance();
+    LocalData localData;
+
     String chosenWord = "";
 
     ArrayAdapter<String> adapter;
@@ -33,24 +39,31 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
 
     CardView wordListCardView, newWordCardView;
 
-    Button randomWordBtn, selectWordBtn, newWordBtn, startGameBtn;
+    Button randomWordBtn, selectWordBtn, updateWordsBtn, newWordBtn, startGameBtn;
     TextView chosenWordTxt;
     EditText newWordTxt;
+
+    Boolean errorFound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_word);
 
+        localData = new LocalData(this);
+
+        galgelogik.loadWords(localData.getData("words"));
         listView = findViewById(R.id.word_list);
 
         randomWordBtn = findViewById(R.id.word_random_btn);
         selectWordBtn = findViewById(R.id.word_select_btn);
+        updateWordsBtn = findViewById(R.id.update_words);
         newWordBtn = findViewById(R.id.word_new_btn);
         startGameBtn = findViewById(R.id.start_game_btn);
 
         randomWordBtn.setOnClickListener(this);
         selectWordBtn.setOnClickListener(this);
+        updateWordsBtn.setOnClickListener(this);
         newWordBtn.setOnClickListener(this);
         startGameBtn.setOnClickListener(this);
 
@@ -71,31 +84,23 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable s) {
                 String word = newWordTxt.getText().toString();
-                if(word.length() > 0) {
-                    if (word.matches("[a-zæøåA-ZÆØÅ]+")) {
-                        chosenWord = newWordTxt.getText().toString();
-                        chosenWordTxt.setText(chosenWord);
-                    } else {
-                        Toast.makeText(NewWord.this, "Du må kun bruge bogstaver!", Toast.LENGTH_SHORT).show();
-                    }
+                if (word.matches("[a-zæøåA-ZÆØÅ]+")) {
+                    chosenWord = newWordTxt.getText().toString();
+                    chosenWordTxt.setText(chosenWord);
+                } else {
+                    Toast.makeText(NewWord.this, "Du må kun bruge bogstaver!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        Intent intent = getIntent();
-
-        words.addAll(new HashSet<String>(Arrays.asList(intent.getExtras().getString("words").toString().split(", "))));
-
-        //Collections.sort(words, String.CASE_INSENSITIVE_ORDER);
-
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, words);
+        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, galgelogik.muligeOrd);
         listView.setAdapter(adapter);
         listView.setClickable(true);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                chosenWord = words.get(position);
+                chosenWord = galgelogik.muligeOrd.get(position);
                 chosenWordTxt.setText(chosenWord);
             }
         });
@@ -103,32 +108,24 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+
         if(v.equals(randomWordBtn)){
             //Start spil med et random ord
-
-            chosenWord = words.get(new Random(System.currentTimeMillis()).nextInt(words.size()));
-
-            Intent result = new Intent();
-            result.putExtra("NewWord", chosenWord);
-            setResult(Activity.RESULT_OK, result);
+            galgelogik.randomWord();
             finish();
-
         } else if(v.equals(selectWordBtn)){
             //vis vælg ord
             wordListCardView.setVisibility(View.VISIBLE);
             newWordCardView.setVisibility(View.GONE);
-
+        } else if(v.equals(updateWordsBtn)){
+            new UpdateWords().execute();
         } else if(v.equals(newWordBtn)){
             //new word
             wordListCardView.setVisibility(View.GONE);
             newWordCardView.setVisibility(View.VISIBLE);
-
         } else if(v.equals(startGameBtn)){
-
             if(!chosenWord.isEmpty()){
-                Intent result = new Intent();
-                result.putExtra("NewWord", chosenWord);
-                setResult(Activity.RESULT_OK, result);
+                galgelogik.setWord(chosenWord);
                 finish();
             } else {
                 if(wordListCardView.getVisibility() == View.VISIBLE){
@@ -141,5 +138,55 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
             }
 
         }
+    }
+
+    public void showError(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(NewWord.CONNECTIVITY_SERVICE);
+        NetworkInfo network = connectivityManager.getActiveNetworkInfo();
+
+        if(network == null || !network.isConnected()){
+            Toast.makeText(this, "Kunne ikke hente ord fra DR - Tjek internet forbindelse.", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Kunne ikke hente ord fra DR", Toast.LENGTH_LONG).show();
+        }
+
+        errorFound = false;
+    }
+
+    private class UpdateWords extends AsyncTask<String, Void, String> {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewWord.this);
+
+        AlertDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                galgelogik.hentOrdFraDr();
+            } catch (Exception e) {
+                e.printStackTrace();
+                errorFound = true;
+            }
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            adapter.notifyDataSetChanged();
+            progressDialog.dismiss();
+            if(errorFound)
+                showError();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            builder.setCancelable(false);
+            builder.setView(R.layout.layout_loading_dialog);
+            progressDialog = builder.create();
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 }

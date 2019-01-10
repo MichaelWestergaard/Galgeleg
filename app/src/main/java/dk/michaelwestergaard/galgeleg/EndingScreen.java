@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -31,7 +33,7 @@ public class EndingScreen extends AppCompatActivity implements View.OnClickListe
         String description = intent.getExtras().getString("description");
         Boolean gameWon = intent.getExtras().getBoolean("gameIsWon");
 
-        TextView titleTextView = findViewById(R.id.title);
+        final TextView titleTextView = findViewById(R.id.title);
         TextView descriptionTextView = findViewById(R.id.description);
 
         btnExit = findViewById(R.id.btn_exit);
@@ -39,6 +41,9 @@ public class EndingScreen extends AppCompatActivity implements View.OnClickListe
 
         btnExit.setOnClickListener(this);
         btnPlay.setOnClickListener(this);
+
+        titleTextView.setAnimation(AnimationUtils.loadAnimation(this, R.anim.zoom));
+        btnPlay.setAnimation(AnimationUtils.loadAnimation(this, R.anim.shake_btn));
 
         constraintLayout = findViewById(R.id.endingContainer);
 
