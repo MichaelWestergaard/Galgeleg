@@ -173,6 +173,10 @@ public class Galgelogik {
         opdaterSynligtOrd();
     }
 
+    public void removeWord(){
+        ordet = null;
+    }
+
     public void setWord(int position){
         nulstil();
         ordet = muligeOrd.get(position);

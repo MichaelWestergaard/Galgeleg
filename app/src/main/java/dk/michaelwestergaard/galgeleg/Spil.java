@@ -2,6 +2,8 @@ package dk.michaelwestergaard.galgeleg;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,8 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
     Galgelogik galgelogik = Galgelogik.getInstance();
     PlayerDAO playerDAO = new PlayerDAO();
     PlayerDTO player = null;
+
+    Boolean errorFound = false;
 
     String username = "Anonymous";
     int score = 0;
@@ -130,6 +134,7 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
             } else {
                 showEndingScreen("Du har tabt!", "Ordet var: " + galgelogik.getOrdet());
             }
+            galgelogik.removeWord();
         }
     }
 
@@ -183,6 +188,21 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    public void showError(){
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Spil.CONNECTIVITY_SERVICE);
+        NetworkInfo network = connectivityManager.getActiveNetworkInfo();
+
+        finish();
+        if(network == null || !network.isConnected()){
+            Toast.makeText(this, "Kunne ikke hente ord fra DR - Tjek internet forbindelse.", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Kunne ikke hente ord fra DR", Toast.LENGTH_LONG).show();
+        }
+
+        errorFound = false;
+    }
+
     private class NewWords extends AsyncTask<String, Void, String> {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Spil.this);
@@ -195,16 +215,21 @@ public class Spil extends AppCompatActivity implements View.OnClickListener {
                 galgelogik.hentOrdFraDr();
             } catch (Exception e) {
                 e.printStackTrace();
+                errorFound = true;
             }
             return "Executed";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            localData.saveData("words", galgelogik.muligeOrd.toString());
-            progressDialog.dismiss();
-
-            startActivityForResult(new Intent(Spil.this, NewWord.class), 0);
+            if(errorFound) {
+                progressDialog.dismiss();
+                showError();
+            } else {
+                localData.saveData("words", galgelogik.muligeOrd.toString());
+                progressDialog.dismiss();
+                startActivityForResult(new Intent(Spil.this, NewWord.class), 0);
+            }
         }
 
         @Override

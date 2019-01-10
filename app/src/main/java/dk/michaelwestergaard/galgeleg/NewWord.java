@@ -2,6 +2,8 @@ package dk.michaelwestergaard.galgeleg;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +42,8 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
     Button randomWordBtn, selectWordBtn, updateWordsBtn, newWordBtn, startGameBtn;
     TextView chosenWordTxt;
     EditText newWordTxt;
+
+    Boolean errorFound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +140,19 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    public void showError(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(NewWord.CONNECTIVITY_SERVICE);
+        NetworkInfo network = connectivityManager.getActiveNetworkInfo();
+
+        if(network == null || !network.isConnected()){
+            Toast.makeText(this, "Kunne ikke hente ord fra DR - Tjek internet forbindelse.", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Kunne ikke hente ord fra DR", Toast.LENGTH_LONG).show();
+        }
+
+        errorFound = false;
+    }
+
     private class UpdateWords extends AsyncTask<String, Void, String> {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(NewWord.this);
@@ -148,6 +165,7 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
                 galgelogik.hentOrdFraDr();
             } catch (Exception e) {
                 e.printStackTrace();
+                errorFound = true;
             }
             return "Executed";
         }
@@ -156,6 +174,8 @@ public class NewWord extends AppCompatActivity implements View.OnClickListener {
         protected void onPostExecute(String result) {
             adapter.notifyDataSetChanged();
             progressDialog.dismiss();
+            if(errorFound)
+                showError();
         }
 
         @Override

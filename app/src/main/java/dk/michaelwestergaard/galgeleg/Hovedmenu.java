@@ -28,6 +28,7 @@ public class Hovedmenu extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_hovedmenu);
 
         localData = new LocalData(this);
+        localData.saveData("words", "");
 
         Log.d("SharedPref", localData.toString());
 
